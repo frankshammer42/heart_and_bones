@@ -1,0 +1,8 @@
+/Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug/CMakeFiles/heart-upload.dir
+/Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug/CMakeFiles/heart.dir
+/Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug/CMakeFiles/heart-size.dir
+/Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug/CMakeFiles/uno_SPI.dir
+/Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug/CMakeFiles/upload.dir
+/Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug/CMakeFiles/uno_CORE.dir

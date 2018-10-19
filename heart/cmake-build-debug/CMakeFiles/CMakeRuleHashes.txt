@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+b1db573dc03d6b2bafa4de518149dbbe CMakeFiles/heart-size
+f20f8cb8e4e3cbfbdb72106d4e9648c0 CMakeFiles/heart-upload
+8852342b7e0626de435191f3df90c3a6 heart_heart.ino.cpp
