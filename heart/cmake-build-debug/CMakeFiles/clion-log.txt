@@ -1,6 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart
--- Generating heart
--- Using /Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-objcopy for converting firmware image to hex
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/frankshammer42/Documents/ITP/Pcomp/b_h/heart/cmake-build-debug
