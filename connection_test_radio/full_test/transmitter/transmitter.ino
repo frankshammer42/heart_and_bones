@@ -21,17 +21,17 @@
 
 PulseSensorPlayground pulseSensor;  
 uint8_t outputBuffer[MESSAGE_LENGTH]; // output buffer
-bool transfered_data = false;
-bool record_heartbeat = true;
+bool transfer_data = false;
+bool record_heartbeat = false;
 int threshold = 550;
-int pulse_check_threshold = 1;
+int pulse_check_threshold = 2;
 int pulse_check_times = 0;
 int pulse_sum = 0;
 int pulse_to_transfer = 0; byte samplesUntilReport; const byte SAMPLES_PER_SERIAL_SAMPLE = 10;
-int current_index = 1;
-
-
-
+int current_index = 1; //start from zero
+int button_pin = 7;
+int send_times = 0;
+//int heartbeat = [];
 
 void heart_pulse_setup(){
   pulseSensor.analogInput(PulseWire);   
@@ -43,22 +43,6 @@ void heart_pulse_setup(){
     Serial.println("Pulse Sensor Initiated");  
   }
 }
-
-/*void get_pulse(){*/
-  /*int myBPM = pulseSensor.getBeatsPerMinute();  */
-  /*Serial.println(myBPM);*/
-  /*if (pulseSensor.sawStartOfBeat()) {             */
-	  /*Serial.println("♥!!!"); */
-	  /*Serial.print("BPM: ");                         */
-	  /*Serial.println(myBPM);                         */
-	  /*pulse_check_times += 1;*/
-	  /*pulse_sum += myBPM;*/
-  /*}*/
-
-  /*//Test*/
-  /*delay(20);        */
-/*}*/
-
 
 bool get_enough_pulse(){
   if (pulse_check_times == pulse_check_threshold){
@@ -90,6 +74,7 @@ void send_pulse(int receiverId, int value) {
 
 void setup() {
   Serial.begin(115200);
+  pinMode(button_pin, INPUT);
   heart_pulse_setup(); 
   vw_set_tx_pin(DATA_PIN); // transmitter module data pin
   vw_setup(BPS); // transmission rate
@@ -98,6 +83,11 @@ void setup() {
 void loop() {
   /*int pulse_to_transfer = 0;*/
   /*get_pulse();*/
+  boolean button_pressed = digitalRead(button_pin);
+  if (button_pressed){
+    Serial.println("♥ Start to read heart beat --------");
+    record_heartbeat = true;
+  }
   if (pulseSensor.sawNewSample() && record_heartbeat) {
     if (--samplesUntilReport == (byte) 0) {
       samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
@@ -105,9 +95,9 @@ void loop() {
       if (pulseSensor.sawStartOfBeat()) {
 		int myBPM = pulseSensor.getBeatsPerMinute();
 		if (myBPM < 100 && myBPM > 60){
-			Serial.print("♥!!!"); 
-			Serial.print(" Get beats ----------");	
-			Serial.println(myBPM);
+			/*Serial.print("♥!!!"); */
+			/*Serial.print(" Get beats ----------");	*/
+			/*Serial.println(myBPM);*/
 			pulse_check_times += 1;
 			pulse_sum += myBPM;
 	    }
@@ -115,20 +105,36 @@ void loop() {
     }
     if (get_enough_pulse()){
       pulse_to_transfer = int(pulse_sum/pulse_check_times);
-	  Serial.print("Sum is "); 
-	  Serial.println(pulse_sum);
+	  /*Serial.print("Sum is "); */
+	  /*Serial.println(pulse_sum);*/
       reset_pulse_params();
 	  record_heartbeat = false;
+      transfer_data = true;
     }
   }
   
-  if (!record_heartbeat){
+  if (!record_heartbeat && transfer_data){
 	 Serial.print("♥!!! "); 
-	 Serial.print("Start to send data");
+	 Serial.print("Start to send data to ");
+     Serial.println(current_index);
+     Serial.print("The pulse is "); 
 	 Serial.println(pulse_to_transfer);
      send_pulse(current_index , pulse_to_transfer);
-	 send_pulse(MASTER_ID, pulse_to_transfer);
+	 send_times++;
+	 //heartbeat[current_index] = pulse_to_transfer;
+     //*send_pulse(MASTER_ID, pulse_to_transfer);*/
   }
+  if (send_times > 100){
+    Serial.println("Send more than 100 times now wait");
+    transfer_data = false; 
+    current_index++;
+    if (current_index > 3){
+      current_index = 1;
+    }
+    send_times = 0;
+    delay(3000);
+  }
+  
   
   /*if (get_enough_pulse()){*/
     /*int pulse_to_transfer = int(pulse_sum/pulse_check_times);*/

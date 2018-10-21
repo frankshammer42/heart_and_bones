@@ -14,14 +14,27 @@ byte dataLength = VW_MAX_MESSAGE_LEN; // the size of the data
 
 unsigned long lastDataReceived = 0; // time (millis) of last data reception
 byte bytesReceived = 0; // number of bytes of current packet already received
+int outputPin = 7;
+bool got_data = false;
+int my_bpm = 0;
+
+
+void blink(int bpm){ 
+  digitalWrite(outputPin, HIGH);
+  delay(30000/bpm);
+  digitalWrite(outputPin, LOW);
+  delay(30000/bpm);
+}
+
 
 void setup() {
   Serial.begin(9600);
-
+  pinMode(outputPin, OUTPUT);
   vw_set_rx_pin(RX_PIN); // pin
   vw_setup(BPS); // transmission rate
   vw_rx_start(); // start receiver
 }
+
 
 void loop() {
   if (vw_get_message(rawData, &dataLength)) { // data incoming
@@ -50,8 +63,10 @@ void loop() {
           byte* valPtr = (byte*)&val;
           *(valPtr++) = inputBuffer[1];
           *(valPtr++) = inputBuffer[2];
-          
+    	  Serial.println("♥ Got Heart Beat ");
           Serial.println(val);
+          my_bpm = val; 
+		  got_data = true;
         }
 
         flushInputBuffer(); // clear input buffer
@@ -62,6 +77,10 @@ void loop() {
   if (bytesReceived && lastDataReceived + MILLIS_IDLE_BETWEEN_TRANSMISSION / 2 < millis()) {
     // a broken packet has been received 
     flushInputBuffer();
+  }
+  
+  if(got_data){
+    blink(my_bpm);
   }
 }
 
