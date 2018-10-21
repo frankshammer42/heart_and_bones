@@ -7,6 +7,9 @@
 // IDs of the receiver modules [1;255]
 #define RECEIVER1_ID 1
 #define RECEIVER2_ID 2
+#define RECEIVER3_ID 3
+#define MASTER_ID 4
+
 
 #define MESSAGE_LENGTH 3 // packet size in bytes
 
@@ -25,6 +28,7 @@ int pulse_check_threshold = 1;
 int pulse_check_times = 0;
 int pulse_sum = 0;
 int pulse_to_transfer = 0; byte samplesUntilReport; const byte SAMPLES_PER_SERIAL_SAMPLE = 10;
+int current_index = 1;
 
 
 
@@ -122,7 +126,8 @@ void loop() {
 	 Serial.print("♥!!! "); 
 	 Serial.print("Start to send data");
 	 Serial.println(pulse_to_transfer);
-     send_pulse(RECEIVER1_ID , pulse_to_transfer);
+     send_pulse(current_index , pulse_to_transfer);
+	 send_pulse(MASTER_ID, pulse_to_transfer);
   }
   
   /*if (get_enough_pulse()){*/
