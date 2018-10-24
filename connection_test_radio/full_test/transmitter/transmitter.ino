@@ -35,7 +35,7 @@ int button_pin = 7;
 int send_times = 0;
 int heart_pulse_accumulator = 0;
 int zero_times = 0;
-int zero_check_threshold = 10;
+int zero_check_threshold = 5;
 
 bool printed_prompt = false;
 
@@ -86,7 +86,7 @@ void print_BPM(int myBPM){
 //use loop to ensure data is safely sent
 void write_to_serial(byte value){
   if (value == 1){
-    for (int i=0; i<10; i++){
+    for (int i=0; i<5; i++){
 	  Serial.write(value);
 	}
   }

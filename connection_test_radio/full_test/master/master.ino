@@ -44,7 +44,7 @@ void loop() {
       // check whether a full packet has been received already
       if (bytesReceived == MESSAGE_LENGTH) {
         // read recipient information (first byte)
-        if (inputBuffer[0] == RECEIVER_ID) {
+        if (inputBuffer[0] == MASTER_ID) {
           // packet is for this receiver
           // read packet content
 
@@ -52,10 +52,10 @@ void loop() {
           byte* valPtr = (byte*)&val;
           *(valPtr++) = inputBuffer[1];
           *(valPtr++) = inputBuffer[2];
-		  if (value != previous_heart_beats){
-	        current_index++;
-            bones_heart_beats[current_index] = value;
-            previous_heart_beats = value;
+		  if (val != previous_heart_beats){
+	        current_bone_index++;
+            bones_heart_beats[current_bone_index] = val;
+            previous_heart_beats = val;
 		  }
         }
         flushInputBuffer(); // clear input buffer
@@ -68,7 +68,7 @@ void loop() {
   }
 
   //If we have enough bone data print
-  if (current_index >= 2){
+  if (current_bone_index >= 2){
     got_all_bone_data = true;
 	for (int i; i<3; i++){
       Serial.print("Bone ");
