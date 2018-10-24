@@ -1,5 +1,6 @@
 //Master to store all the heartbeats for the bones   
 #include <VirtualWire.h>
+#include <PJON.h>
 
 #define BPS 8000 // transmission rate (bits per second)
 #define MASTER_ID 4 // ID of the master 
@@ -20,15 +21,67 @@ int current_bone_index = -1;
 int previous_heart_beats = 0;
 bool got_all_bone_data = false;
 
-void setup() {
-  Serial.begin(9600);
+// PJON Part 
+float startTime;
+float timeA;
+float timeB;
+PJON<SoftwareBitBang> bus(MASTER_ID); //  PJON ID 4 - consistent with radio ID
 
+void write_serial(int value) {
+  for (int i=0; i<20; i++){
+    Serial.write(value);   
+    delay(1);
+  }
+}
+
+void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
+  if (payload[0] == 'A') {
+    if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {
+      write_serial(0);
+      write_serial(bones_heart_beats[0]);
+    }
+    else {
+	  /*digitalWrite(3, LOW);*/
+    }
+  }
+  //  delay(100);
+  if (payload[0] == 'B') {
+    if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {
+      write_serial(1);
+      write_serial(bones_heart_beats[1]);
+    }
+    //    delay(100);
+    else {
+	  /*digitalWrite(2, LOW);*/
+    }
+  }
+
+  if (payload[0] == 'C') {
+    if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {
+      write_serial(2);
+      write_serial(bones_heart_beats[2]);
+    }
+    //    delay(100);
+    else {
+	  /*digitalWrite(2, LOW);*/
+    }
+  }
+}
+
+//Main Part with radio
+void setup() {
+  startTime = millis();
+  Serial.begin(9600);
   vw_set_rx_pin(RX_PIN); // pin
   vw_setup(BPS); // transmission rate
   vw_rx_start(); // start receiver
+  bus.strategy.set_pin(10);
+  bus.begin();
+  bus.set_receiver(receiver_function);
 }
 
 void loop() {
+  bus.receive(1000);
   if (vw_get_message(rawData, &dataLength)) { // data incoming
     lastDataReceived = millis();
     // valid number of bytes received
@@ -68,17 +121,16 @@ void loop() {
   }
 
   //If we have enough bone data print
-  if (current_bone_index >= 2){
-    got_all_bone_data = true;
-	for (int i; i<3; i++){
-      Serial.print("Bone ");
-      Serial.print(i);
-      Serial.print(" has ");
-      Serial.println(bones_heart_beats[i]);
-      Serial.println("----------");
-    }
-  }
-
+  /*if (current_bone_index >= 2){*/
+    /*got_all_bone_data = true;*/
+	/*for (int i; i<3; i++){*/
+      /*Serial.print("Bone ");*/
+      /*Serial.print(i);*/
+      /*Serial.print(" has ");*/
+      /*Serial.println(bones_heart_beats[i]);*/
+      /*Serial.println("----------");*/
+    /*}*/
+  /*}*/
 }
 
 void flushInputBuffer() {
