@@ -1,7 +1,19 @@
 #include <VirtualWire.h>
 
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+  #include <avr/power.h>
+#endif
+
+// Which pin on the Arduino is connected to the NeoPixels?
+// On a Trinket or Gemma we suggest changing this to 1
+#define PIN            7
+
+// How many NeoPixels are attached to the Arduino?
+#define NUMPIXELS      10
+
 #define BPS 8000 // transmission rate (bits per second)
-#define RECEIVER_ID 2 // ID of this receiver
+#define RECEIVER_ID 3 // ID of this receiver
 #define MESSAGE_LENGTH 3 // number of bytes a data packet contains
 #define MILLIS_IDLE_BETWEEN_TRANSMISSION 9 // min. time the transmitter waits before sending the next message
 
@@ -20,18 +32,29 @@ int my_bpm = 0;
 
 //PJON Part Setup
 
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
 
 void blink(int bpm){ 
-  digitalWrite(outputPin, HIGH);
-  delay(30000/bpm);
-  digitalWrite(outputPin, LOW);
-  delay(30000/bpm);
+  for(int i=0;i<NUMPIXELS;i++){
+
+    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+    pixels.setPixelColor(i, pixels.Color(200,0,0)); // Moderately bright green color.
+
+    pixels.show(); // This sends the updated pixel color to the hardware.
+
+    delay(30000/bpm); // Delay for a period of time (in milliseconds).
+
+  }
 }
 
 
 void setup() {
   Serial.begin(9600);
   pinMode(outputPin, OUTPUT);
+ 
+
+  pixels.begin(); // This initializes the NeoPixel library.
   vw_set_rx_pin(RX_PIN); // pin
   vw_setup(BPS); // transmission rate
   vw_rx_start(); // start receiver
@@ -39,7 +62,6 @@ void setup() {
 
 
 void loop() {
-  bus.update();
   if (vw_get_message(rawData, &dataLength)) { // data incoming
     lastDataReceived = millis();
 

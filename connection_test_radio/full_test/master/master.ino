@@ -64,7 +64,6 @@ void write_serial(int value) {
 
 //Main Part with radio
 void setup() {
-  startTime = millis();
   Serial.begin(9600);
   vw_set_rx_pin(RX_PIN); // pin
   vw_setup(BPS); // transmission rate
@@ -72,7 +71,7 @@ void setup() {
 }
 
 void loop() {
-  bus.receive(1000);
+  /*bus.receive(1000);*/
   if (vw_get_message(rawData, &dataLength)) { // data incoming
     lastDataReceived = millis();
     // valid number of bytes received

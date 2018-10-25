@@ -19,6 +19,10 @@
 #define PulseWire 0
 
 
+
+
+
+
 PulseSensorPlayground pulseSensor;  
 uint8_t outputBuffer[MESSAGE_LENGTH]; // output buffer
 bool transfer_data = false;
