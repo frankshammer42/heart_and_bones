@@ -1,6 +1,5 @@
 //Master to store all the heartbeats for the bones   
 #include <VirtualWire.h>
-#include <PJON.h>
 
 #define BPS 8000 // transmission rate (bits per second)
 #define MASTER_ID 4 // ID of the master 
@@ -21,11 +20,6 @@ int current_bone_index = -1;
 int previous_heart_beats = 0;
 bool got_all_bone_data = false;
 
-// PJON Part 
-float startTime;
-float timeA;
-float timeB;
-PJON<SoftwareBitBang> bus(MASTER_ID); //  PJON ID 4 - consistent with radio ID
 
 void write_serial(int value) {
   for (int i=0; i<20; i++){
@@ -34,39 +28,39 @@ void write_serial(int value) {
   }
 }
 
-void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
-  if (payload[0] == 'A') {
-    if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {
-      write_serial(0);
-      write_serial(bones_heart_beats[0]);
-    }
-    else {
-	  /*digitalWrite(3, LOW);*/
-    }
-  }
-  //  delay(100);
-  if (payload[0] == 'B') {
-    if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {
-      write_serial(1);
-      write_serial(bones_heart_beats[1]);
-    }
-    //    delay(100);
-    else {
-	  /*digitalWrite(2, LOW);*/
-    }
-  }
-
-  /*if (payload[0] == 'C') {*/
+/*void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {*/
+  /*if (payload[0] == 'A') {*/
     /*if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {*/
-      /*write_serial(2);*/
-      /*write_serial(bones_heart_beats[2]);*/
+      /*write_serial(0);*/
+      /*write_serial(bones_heart_beats[0]);*/
+    /*}*/
+    /*else {*/
+	  /*[>digitalWrite(3, LOW);<]*/
+    /*}*/
+  /*}*/
+  /*//  delay(100);*/
+  /*if (payload[0] == 'B') {*/
+    /*if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {*/
+      /*write_serial(1);*/
+      /*write_serial(bones_heart_beats[1]);*/
     /*}*/
     /*//    delay(100);*/
     /*else {*/
 	  /*[>digitalWrite(2, LOW);<]*/
     /*}*/
   /*}*/
-}
+
+  /*[>if (payload[0] == 'C') {<]*/
+    /*[>if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {<]*/
+      /*[>write_serial(2);<]*/
+      /*[>write_serial(bones_heart_beats[2]);<]*/
+    /*[>}<]*/
+    /*[>//    delay(100);<]*/
+    /*[>else {<]*/
+	  /*[>[>digitalWrite(2, LOW);<]<]*/
+    /*[>}<]*/
+  /*[>}<]*/
+/*}*/
 
 //Main Part with radio
 void setup() {
@@ -75,9 +69,6 @@ void setup() {
   vw_set_rx_pin(RX_PIN); // pin
   vw_setup(BPS); // transmission rate
   vw_rx_start(); // start receiver
-  bus.strategy.set_pin(10);
-  bus.begin();
-  bus.set_receiver(receiver_function);
 }
 
 void loop() {
@@ -100,12 +91,13 @@ void loop() {
         if (inputBuffer[0] == MASTER_ID) {
           // packet is for this receiver
           // read packet content
-
           int val;
           byte* valPtr = (byte*)&val;
           *(valPtr++) = inputBuffer[1];
           *(valPtr++) = inputBuffer[2];
 		  if (val != previous_heart_beats){
+			write_serial(current_bone_index);
+			write_serial(bones_heart_beats[current_bone_index]);
 	        current_bone_index++;
             bones_heart_beats[current_bone_index] = val;
             previous_heart_beats = val;
