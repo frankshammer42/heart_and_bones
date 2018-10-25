@@ -2,7 +2,7 @@
 #include <PJON.h>
 
 #define BPS 8000 // transmission rate (bits per second)
-#define RECEIVER_ID 1 // ID of this receiver
+#define RECEIVER_ID 2 // ID of this receiver
 #define MESSAGE_LENGTH 3 // number of bytes a data packet contains
 #define MILLIS_IDLE_BETWEEN_TRANSMISSION 9 // min. time the transmitter waits before sending the next message
 
@@ -35,7 +35,7 @@ void setup() {
   Serial.begin(9600);
   bus.strategy.set_pin(10);
   bus.begin();
-  bus.send_repeatedly(4, "A", 1, 1000000); // Send B to device 2 every second
+  bus.send_repeatedly(4, "A", RECEIVER_ID, 1000000); // Send B to device 2 every second
   pinMode(outputPin, OUTPUT);
   vw_set_rx_pin(RX_PIN); // pin
   vw_setup(BPS); // transmission rate

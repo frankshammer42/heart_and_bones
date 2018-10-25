@@ -56,16 +56,16 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     }
   }
 
-  if (payload[0] == 'C') {
-    if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {
-      write_serial(2);
-      write_serial(bones_heart_beats[2]);
-    }
-    //    delay(100);
-    else {
-	  /*digitalWrite(2, LOW);*/
-    }
-  }
+  /*if (payload[0] == 'C') {*/
+    /*if (millis() % 2000 >= 0 && millis() % 2000 < 1000) {*/
+      /*write_serial(2);*/
+      /*write_serial(bones_heart_beats[2]);*/
+    /*}*/
+    /*//    delay(100);*/
+    /*else {*/
+	  /*[>digitalWrite(2, LOW);<]*/
+    /*}*/
+  /*}*/
 }
 
 //Main Part with radio
