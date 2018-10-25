@@ -13,7 +13,7 @@
 #define NUMPIXELS      10
 
 #define BPS 8000 // transmission rate (bits per second)
-#define RECEIVER_ID 3 // ID of this receiver
+#define RECEIVER_ID 1 // ID of this receiver
 #define MESSAGE_LENGTH 3 // number of bytes a data packet contains
 #define MILLIS_IDLE_BETWEEN_TRANSMISSION 9 // min. time the transmitter waits before sending the next message
 
@@ -41,10 +41,19 @@ void blink(int bpm){
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
     pixels.setPixelColor(i, pixels.Color(200,0,0)); // Moderately bright green color.
 
+  
+  }
+  
+  delay(30000/bpm); // Delay for a period of time (in milliseconds).
+
+   for(int i=0;i<NUMPIXELS;i++){
+
+    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+    pixels.setPixelColor(i, pixels.Color(0,0,0)); // Moderately bright green color.
+
     pixels.show(); // This sends the updated pixel color to the hardware.
 
-    delay(30000/bpm); // Delay for a period of time (in milliseconds).
-
+    
   }
 }
 
